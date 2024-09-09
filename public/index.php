@@ -15,5 +15,14 @@ $router->map('GET', '/category', function(){
 
 // demander aux routeur si l'url tapé correspond a une de ces routes.
 $match = $router->match();
-$match['target']();
+
+if ($match && is_callable($match['target'])) {
+    // Si la route existe et est appelable
+    call_user_func_array($match['target'], $match['params']);
+} else {
+    // Si aucune route ne correspond
+    header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
+    require dirname(__DIR__) . '/views/404.php'; // Chargez une page 404 personnalisée
+}
+
 ?>
